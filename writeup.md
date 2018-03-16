@@ -112,7 +112,7 @@ Ultimately I searched on two scales using YCrCb, Y-channel HOG features plus spa
 
 
 
-![alt text][image4]
+![alt text][image6]
 ---
 
 ### Video Implementation
