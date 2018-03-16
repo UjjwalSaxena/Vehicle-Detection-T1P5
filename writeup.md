@@ -18,7 +18,7 @@ The goals / steps of this project are the following:
 [image6]: ./examples/pipeline_test.png
 [image7]: ./examples/pipeline_test_heat.png
 [image8]: ./examples/pipeline_test_images.png
-
+[image9]: ./examples/windows.png
 [video1]: ./project_video.mp4
 
 
@@ -54,7 +54,11 @@ Here is an example using the `YCrCb` color space, Y channel and HOG parameters o
 ![alt text][image3]
 
 #### YCrCb Histogram Visualization of Car and Non Car Images:
+
+#### Cars
 ![alt text][image2]
+
+#### Non Cars
 ![alt text][image5]
 
 
@@ -73,9 +77,7 @@ I finally settled with the following parameters.
         cell_per_block = 2 
         hog_channel = 0 
 
-It took **2min 38s** to extract all features with training time of **12.3s** and Test Accuracy of **0.9799**
-Earlier it was taking ~ 9 secs to train but after using a C value of 1000, It took some more seconds to train.
-However the classification between vehicles and not vehicles was good
+It took **57.3 s** to extract all features with training time of **9.36 s** and Test Accuracy of **97.87%**
 
 #### 3. Describe how (and identify where in your code) you trained a classifier using your selected HOG features (and color features if you used them).
 
@@ -94,21 +96,20 @@ After that I trained and tested the Linear SVM classifier using the following co
 
 Sliding windows are generated in slide_window() method and are getting searched in search_windows() function.
 I decided to do a sliding window search for which I generated the windows of square shapes of various sizes.
-I intialized the window size of 72 X 72 and then scaled it up to x1.5, x2.0 and x2.5. I used two rows of each scale.
-And started the each new window size, 20px below the previous window's starting position.
+I intialized the window size of 72 X 72 and then scaled it up to x1.5, x2.0 and x2.5. I used two rows for each scale.
 
 I used an overlap of 0.9 or 90% on both horizontal axis and the vertical axis.
 I selected these values after lot of hits and trials so that the cars in the video start getting detected properly.
 Cars far away required smaller window size to get detected. Whereas the cars nearby needed larger windows.
 Hence I came up with the aforesaid window sizes.
 
-search_windows() method helps in extracting window features and then making predictions using the classifier. I have not used predict() method instead I have used decision_function() method to get the decision score and based on that I am filtering the responses of the classifier. All values below 0.7 are ignored and rest are predicted as cars.
+search_windows() method helps in extracting window features and then making predictions using the classifier. I have not used predict() method instead I have used decision_function() method to get the decision score and based on that I am filtering the responses of the classifier. All values below 1.5 are ignored and rest are predicted as cars.
 
-
+![alt text][image9]
 
 #### 2. Show some examples of test images to demonstrate how your pipeline is working.  What did you do to optimize the performance of your classifier?
 
-Ultimately I searched on two scales using YCrCb, Y-channel HOG features plus spatially binned color and histograms of color in the feature vector, which provided a nice result. Here are some example images:
+Ultimately I searched on two scales using YCrCb, Y-channel HOG features plus spatially binned color and histograms of color in the feature vector, which provided a nice result. I was satisfied with the performance of the classifier and hence decided to go with the default parameters. However I augmented the images(flipped images) to make the classifier predict better. Here are some example images:
 
 
 
@@ -125,11 +126,10 @@ Here's a [link to my video result](./project_video_output.mp4)
 
 I recorded the positions of positive detections in each frame of the video.  From the positive detections I created a heatmap and then thresholded that map to identify vehicle positions.  I then used `scipy.ndimage.measurements.label()` to identify individual blobs in the heatmap.  I then assumed each blob corresponded to a vehicle.  I constructed bounding boxes to cover the area of each blob detected.
 
-I did this separately for both sides of the car. Since I observed that the cars on the right side were moving slower than the cars on the left with respect to the our car. As I was also considering the preciously predicted frames too, the number of detections were more in the right half than the left half and so a common threshold was not able to work well. 
+Earlier I did this separately for both sides of the car. Since I observed that the cars on the right side were moving slower than the cars on the left with respect to the our car. As I was also considering the previously predicted frames too, the number of detections were more in the right half than the left half and so a common threshold was not able to work well. 
 
-Since I am taking past predicted values too for the heat map, I implemeted a dynamic threshold which increases as the number of frames accumulate. I implemented a threshold of minimum(No of previously detected frames, max frames over which averaging is being done) multiplied by an arbitrary number that suits the detection in the video.
+However this was still satisfactory performance. The reason being at some points no. of positive detections were more and at some places they were less, but the threshold was high after certain no. of frames and so I had to modify it based on the no. of detections in a certain frame. So I implemeted a dynamic threshold which is set to half of the maximum heat value in the heat map adjusted by some arbitrary value.
 
-Here's an example result showing the heatmap from a series of frames of video, the result of `scipy.ndimage.measurements.label()` and the bounding boxes then overlaid on the last frame of video:
 
 ### Here are some examples and their corresponding heatmaps, output of `scipy.ndimage.measurements.label()` on the integrated heatmap and the resulting bounding boxes
 
@@ -150,6 +150,7 @@ Challenges faced:
 1. False Positives: I implemented the heat map technique and thresholding for removing the false positives in the video.
 2. Flickering Binding boxes: I am considering the previous frames for minimizing flickering and wobbling.
 3. Merging two binding boxes: This was done by adjusting the threshold after applying the heat map technique.
+4. High Processing time: I skipped alternate frames while creating the output video and retained the last processed frame in its place. Also I was guided by the instructor to focus on the right lane and start searching for cars in the right half only.
 
 Averaging and thresholding are essential for getting a proper output. This solution might fail on other videos as they start searching from a certain position on the image and are dependent upon the view of the camera and inclination of the road. 
 I propose to implement a horizon detection technique to find out the position from where to start window search. This will lead to a higher accuracy in detection of vehicles. 
