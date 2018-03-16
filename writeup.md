@@ -10,13 +10,15 @@ The goals / steps of this project are the following:
 * Estimate a bounding box for vehicles detected.
 
 [//]: # (Image References)
-[image1]: ./examples/car_not_car.png
-[image2]: ./examples/HOG_example.jpg
-[image3]: ./examples/sliding_windows.jpg
-[image4]: ./examples/sliding_window.jpg
-[image5]: ./examples/bboxes_and_heat.png
-[image6]: ./examples/labels_map.png
-[image7]: ./examples/output_bboxes.png
+[image1]: ./examples/car.png
+[image2]: ./examples/car_hist.png
+[image3]: ./examples/hog_car.png
+[image4]: ./examples/non_car.png
+[image5]: ./examples/Non_car_hist.png
+[image6]: ./examples/pipeline_test.png
+[image7]: ./examples/pipeline_test_heat.png
+[image8]: ./examples/pipeline_test_images.png
+
 [video1]: ./project_video.mp4
 
 
@@ -37,14 +39,24 @@ Function get_hog_features() is used to extract HOG features from the images. The
 
 I started by reading in all the `vehicle` and `non-vehicle` images.  Here are some examples of e `vehicle` and `non-vehicle` classes:
 
+#### Car images
 ![alt text][image1]
+
+#### Non car images
+![alt text][image4]
 
 I then explored different color spaces and different `skimage.hog()` parameters (`orientations`, `pixels_per_cell`, and `cells_per_block`).  I grabbed random images from each of the two classes and displayed them to get a feel for what the `skimage.hog()` output looks like.
 
 Here is an example using the `YCrCb` color space, Y channel and HOG parameters of `orientations=12`, `pixels_per_cell=(16, 16)` and `cells_per_block=(2, 2)`:
 
+#### Hog Visualization of a car image
 
+![alt text][image3]
+
+#### YCrCb Histogram Visualization of Car and Non Car Images:
 ![alt text][image2]
+![alt text][image5]
+
 
 #### 2. Explain how you settled on your final choice of HOG parameters.
 
@@ -61,8 +73,9 @@ I finally settled with the following parameters.
         cell_per_block = 2 
         hog_channel = 0 
 
-It took **56.8s** to extract all features with training time of **9.01s** and Test Accuracy of **0.9821**
-
+It took **2min 38s** to extract all features with training time of **12.3s** and Test Accuracy of **0.9799**
+Earlier it was taking ~ 9 secs to train but after using a C value of 1000, It took some more seconds to train.
+However the classification between vehicles and not vehicles was good
 
 #### 3. Describe how (and identify where in your code) you trained a classifier using your selected HOG features (and color features if you used them).
 
@@ -79,16 +92,19 @@ After that I trained and tested the Linear SVM classifier using the following co
 
 #### 1. Describe how (and identify where in your code) you implemented a sliding window search.  How did you decide what scales to search and how much to overlap windows?
 
+Sliding windows are generated in slide_window() method and are getting searched in search_windows() function.
 I decided to do a sliding window search for which I generated the windows of square shapes of various sizes.
-I intialized the window size of 64 X 64 and then scaled it up to x1.5, x2.0 and x2.5. I used two rows of each scale.
+I intialized the window size of 72 X 72 and then scaled it up to x1.5, x2.0 and x2.5. I used two rows of each scale.
 And started the each new window size, 20px below the previous window's starting position.
 
-I used an overlap of 0.9 or 90% on the horizontal axis and 0.8 or 80% on the vertical axis.
+I used an overlap of 0.9 or 90% on both horizontal axis and the vertical axis.
 I selected these values after lot of hits and trials so that the cars in the video start getting detected properly.
 Cars far away required smaller window size to get detected. Whereas the cars nearby needed larger windows.
 Hence I came up with the aforesaid window sizes.
 
-![alt text][image3]
+search_windows() method helps in extracting window features and then making predictions using the classifier. I have not used predict() method instead I have used decision_function() method to get the decision score and based on that I am filtering the responses of the classifier. All values below 0.7 are ignored and rest are predicted as cars.
+
+
 
 #### 2. Show some examples of test images to demonstrate how your pipeline is working.  What did you do to optimize the performance of your classifier?
 
@@ -115,16 +131,9 @@ Since I am taking past predicted values too for the heat map, I implemeted a dyn
 
 Here's an example result showing the heatmap from a series of frames of video, the result of `scipy.ndimage.measurements.label()` and the bounding boxes then overlaid on the last frame of video:
 
-### Here are six frames and their corresponding heatmaps:
+### Here are some examples and their corresponding heatmaps, output of `scipy.ndimage.measurements.label()` on the integrated heatmap and the resulting bounding boxes
 
-![alt text][image5]
-
-### Here is the output of `scipy.ndimage.measurements.label()` on the integrated heatmap from all six frames:
-![alt text][image6]
-
-### Here the resulting bounding boxes are drawn onto the last frame in the series:
-![alt text][image7]
-
+![alt text][image8]
 
 
 ---
@@ -142,3 +151,7 @@ Challenges faced:
 2. Flickering Binding boxes: I am considering the previous frames for minimizing flickering and wobbling.
 3. Merging two binding boxes: This was done by adjusting the threshold after applying the heat map technique.
 
+Averaging and thresholding are essential for getting a proper output. This solution might fail on other videos as they start searching from a certain position on the image and are dependent upon the view of the camera and inclination of the road. 
+I propose to implement a horizon detection technique to find out the position from where to start window search. This will lead to a higher accuracy in detection of vehicles. 
+
+It took me 2 days to fine tune the parameters, still there are some glitches. I ll further try to smoothen the vehicle detection process.
