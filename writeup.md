@@ -54,11 +54,12 @@ Along with various color channels I found that there were various testing accura
 I even acheived 99.44% accuracy with 11 orientations, 32 pixels per cell, YCrCb color space on All channels. But it led to longer training time and I could still see mis classifications. Maybe this was due to the windows getting generated.
 
 I finally settled with the following parameters.
-color_space = 'YCrCb' *# Can be RGB, HSV, LUV, HLS, YUV, YCrCb*
-orient = 12  *# HOG orientations*
-pix_per_cell = 16 *# HOG pixels per cell*
-cell_per_block = 2 *# HOG cells per block*
-hog_channel = 0 *# channel*
+
+        color_space = 'YCrCb' 
+        orient = 12  
+        pix_per_cell = 16 
+        cell_per_block = 2 
+        hog_channel = 0 
 
 It took **56.8s** to extract all features with training time of **9.01s** and Test Accuracy of **0.9821**
 
