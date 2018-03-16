@@ -150,6 +150,7 @@ Challenges faced:
 1. False Positives: I implemented the heat map technique and thresholding for removing the false positives in the video.
 2. Flickering Binding boxes: I am considering the previous frames for minimizing flickering and wobbling.
 3. Merging two binding boxes: This was done by adjusting the threshold after applying the heat map technique.
+4. High Processing time: I skipped alternate frames while creating the output video and retained the last processed frame in its place. Also I was guided by the instructor to focus on the right lane and start searching for cars in the right half only.
 
 Averaging and thresholding are essential for getting a proper output. This solution might fail on other videos as they start searching from a certain position on the image and are dependent upon the view of the camera and inclination of the road. 
 I propose to implement a horizon detection technique to find out the position from where to start window search. This will lead to a higher accuracy in detection of vehicles. 
