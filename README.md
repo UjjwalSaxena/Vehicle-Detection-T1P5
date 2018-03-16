@@ -134,7 +134,7 @@ However this was still satisfactory performance. The reason being at some points
 
 ### Here are some examples and their corresponding heatmaps, output of `scipy.ndimage.measurements.label()` on the integrated heatmap and the resulting bounding boxes
 
-![alt text][image8]
+![alt text][image7]
 
 
 ---
