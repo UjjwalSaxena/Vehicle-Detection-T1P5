@@ -54,7 +54,11 @@ Here is an example using the `YCrCb` color space, Y channel and HOG parameters o
 ![alt text][image3]
 
 #### YCrCb Histogram Visualization of Car and Non Car Images:
+
+#### Cars
 ![alt text][image2]
+
+#### Non Cars
 ![alt text][image5]
 
 
@@ -105,7 +109,7 @@ search_windows() method helps in extracting window features and then making pred
 
 #### 2. Show some examples of test images to demonstrate how your pipeline is working.  What did you do to optimize the performance of your classifier?
 
-Ultimately I searched on two scales using YCrCb, Y-channel HOG features plus spatially binned color and histograms of color in the feature vector, which provided a nice result. Here are some example images:
+Ultimately I searched on two scales using YCrCb, Y-channel HOG features plus spatially binned color and histograms of color in the feature vector, which provided a nice result. I was satisfied with the performance of the classifier and hence decided to go with the default parameters. However I augmented the images(flipped images) to make the classifier predict better. Here are some example images:
 
 
 
