@@ -73,9 +73,7 @@ I finally settled with the following parameters.
         cell_per_block = 2 
         hog_channel = 0 
 
-It took **2min 38s** to extract all features with training time of **12.3s** and Test Accuracy of **0.9799**
-Earlier it was taking ~ 9 secs to train but after using a C value of 1000, It took some more seconds to train.
-However the classification between vehicles and not vehicles was good
+It took **57.3 s** to extract all features with training time of **9.36 s** and Test Accuracy of **97.87%**
 
 #### 3. Describe how (and identify where in your code) you trained a classifier using your selected HOG features (and color features if you used them).
 
@@ -94,8 +92,7 @@ After that I trained and tested the Linear SVM classifier using the following co
 
 Sliding windows are generated in slide_window() method and are getting searched in search_windows() function.
 I decided to do a sliding window search for which I generated the windows of square shapes of various sizes.
-I intialized the window size of 72 X 72 and then scaled it up to x1.5, x2.0 and x2.5. I used two rows of each scale.
-And started the each new window size, 20px below the previous window's starting position.
+I intialized the window size of 72 X 72 and then scaled it up to x1.5, x2.0 and x2.5. I used two rows for each scale.
 
 I used an overlap of 0.9 or 90% on both horizontal axis and the vertical axis.
 I selected these values after lot of hits and trials so that the cars in the video start getting detected properly.
@@ -125,11 +122,10 @@ Here's a [link to my video result](./project_video_output.mp4)
 
 I recorded the positions of positive detections in each frame of the video.  From the positive detections I created a heatmap and then thresholded that map to identify vehicle positions.  I then used `scipy.ndimage.measurements.label()` to identify individual blobs in the heatmap.  I then assumed each blob corresponded to a vehicle.  I constructed bounding boxes to cover the area of each blob detected.
 
-I did this separately for both sides of the car. Since I observed that the cars on the right side were moving slower than the cars on the left with respect to the our car. As I was also considering the preciously predicted frames too, the number of detections were more in the right half than the left half and so a common threshold was not able to work well. 
+Earlier I did this separately for both sides of the car. Since I observed that the cars on the right side were moving slower than the cars on the left with respect to the our car. As I was also considering the previously predicted frames too, the number of detections were more in the right half than the left half and so a common threshold was not able to work well. 
 
-Since I am taking past predicted values too for the heat map, I implemeted a dynamic threshold which increases as the number of frames accumulate. I implemented a threshold of minimum(No of previously detected frames, max frames over which averaging is being done) multiplied by an arbitrary number that suits the detection in the video.
+However this was still satisfactory performance. The reason being at some points no. of positive detections were more and at some places they were less, but the threshold was high after certain no. of frames and so I had to modify it based on the no. of detections in a certain frame. So I implemeted a dynamic threshold which is set to half of the maximum heat value in the heat map adjusted by some arbitrary value.
 
-Here's an example result showing the heatmap from a series of frames of video, the result of `scipy.ndimage.measurements.label()` and the bounding boxes then overlaid on the last frame of video:
 
 ### Here are some examples and their corresponding heatmaps, output of `scipy.ndimage.measurements.label()` on the integrated heatmap and the resulting bounding boxes
 
