@@ -103,7 +103,7 @@ I selected these values after lot of hits and trials so that the cars in the vid
 Cars far away required smaller window size to get detected. Whereas the cars nearby needed larger windows.
 Hence I came up with the aforesaid window sizes.
 
-search_windows() method helps in extracting window features and then making predictions using the classifier. I have not used predict() method instead I have used decision_function() method to get the decision score and based on that I am filtering the responses of the classifier. All values below 0.7 are ignored and rest are predicted as cars.
+search_windows() method helps in extracting window features and then making predictions using the classifier. I have not used predict() method instead I have used decision_function() method to get the decision score and based on that I am filtering the responses of the classifier. All values below 1.5 are ignored and rest are predicted as cars.
 
 ![alt text][image9]
 
