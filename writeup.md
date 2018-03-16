@@ -18,7 +18,7 @@ The goals / steps of this project are the following:
 [image6]: ./examples/pipeline_test.png
 [image7]: ./examples/pipeline_test_heat.png
 [image8]: ./examples/pipeline_test_images.png
-
+[image9]: ./examples/windows.png
 [video1]: ./project_video.mp4
 
 
@@ -104,7 +104,7 @@ Hence I came up with the aforesaid window sizes.
 
 search_windows() method helps in extracting window features and then making predictions using the classifier. I have not used predict() method instead I have used decision_function() method to get the decision score and based on that I am filtering the responses of the classifier. All values below 0.7 are ignored and rest are predicted as cars.
 
-
+![alt text][image9]
 
 #### 2. Show some examples of test images to demonstrate how your pipeline is working.  What did you do to optimize the performance of your classifier?
 
